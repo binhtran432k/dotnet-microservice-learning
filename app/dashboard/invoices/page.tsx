@@ -6,7 +6,12 @@ import Table from '@/app/ui/invoices/table';
 import Search from '@/app/ui/search';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import clsx from 'clsx';
+import { Metadata } from 'next';
 import { Suspense } from 'react';
+
+export const metadata: Metadata = {
+  title: 'Invoices',
+};
 
 export default async function Page({
   searchParams,
@@ -34,7 +39,7 @@ export default async function Page({
         key={`${query}@${currentPage}`}
         fallback={<InvoicesTableSkeleton />}
       >
-        <div className='overflow-x-auto'>
+        <div className="overflow-x-auto">
           <Table query={query} currentPage={currentPage} />
         </div>
       </Suspense>

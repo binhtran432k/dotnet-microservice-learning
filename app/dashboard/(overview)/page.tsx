@@ -8,7 +8,12 @@ import {
   RevenueChartSkeleton,
 } from '@/app/ui/skeletons';
 import clsx from 'clsx';
+import { Metadata } from 'next';
 import { Suspense } from 'react';
+
+export const metadata: Metadata = {
+  title: 'Home',
+};
 
 export default async function Page() {
   return (
