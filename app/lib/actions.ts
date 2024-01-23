@@ -1,6 +1,8 @@
 'use server';
 
+import { signIn } from '@/auth';
 import { sql } from '@vercel/postgres';
+import { AuthError } from 'next-auth';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
@@ -67,7 +69,11 @@ export async function createInvoice(_prevState: State, formData: FormData) {
   redirect('/dashboard/invoices');
 }
 
-export async function updateInvoice(id: string, _prevState: State, formData: FormData) {
+export async function updateInvoice(
+  id: string,
+  _prevState: State,
+  formData: FormData,
+) {
   // Validate form fields using Zod
   const validatedFields = UpdateInvoice.safeParse({
     customerId: formData.get('customerId'),
@@ -110,5 +116,24 @@ export async function deleteInvoice(id: string) {
     return { message: 'Deleted Invoice.' };
   } catch (error) {
     return { message: 'Database Error: Failed to Delete Invoice.' };
+  }
+}
+
+export async function authenticate(
+  _prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
   }
 }
